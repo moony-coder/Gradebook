@@ -1,0 +1,3659 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>GradeJournal — Professional Teacher Gradebook</title>
+  
+  <!-- Fonts -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap"
+    rel="stylesheet">
+  
+  <!-- Ionicons -->
+  <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+  
+  <style>
+    /* Copy ALL your existing CSS here - the same as before */
+    :root {
+      --cream: #FAF7F2;
+      --cream-2: #F3EDE3;
+      --cream-3: #EDE4D6;
+      --warm-brown: #8B6F47;
+      --accent: #C17F3A;
+      --accent-dark: #9B6328;
+      --accent-light: #F0D9B8;
+      --text-dark: #2C2416;
+      --text-mid: #5C4A2A;
+      --text-light: #A08060;
+      --border: #E0D4C0;
+      --border-light: #EDE4D5;
+      --success: #5A8A5A;
+      --success-bg: #EAF3EA;
+      --success-border: #B8D4B8;
+      --error: #C04040;
+      --error-bg: #FAE8E8;
+      --error-border: #E8BEBE;
+      --warning: #B87020;
+      --warning-bg: #FDF0DC;
+      --warning-border: #E8CFA0;
+      --ielts-blue: #3b82f6;
+      --ielts-dark: #1e3a8a;
+      --shadow: 0 4px 24px rgba(139, 111, 71, 0.12);
+      --shadow-lg: 0 12px 48px rgba(139, 111, 71, 0.18);
+      --radius: 16px;
+      --radius-sm: 10px;
+      --nav-h: 62px;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    html,
+    body {
+      height: 100%;
+      overflow: hidden
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--cream);
+      color: var(--text-dark);
+      font-size: 14px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased
+    }
+
+    ::-webkit-scrollbar {
+      width: 5px;
+      height: 5px
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 3px
+    }
+
+    /* SPLASH */
+    #splash {
+      position: fixed;
+      inset: 0;
+      background: var(--cream);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      transition: opacity .8s ease, transform .8s ease
+    }
+
+    #splash.exit {
+      opacity: 0;
+      transform: scale(1.04);
+      pointer-events: none
+    }
+
+    .splash-logo-wrap {
+      position: relative;
+      width: 110px;
+      height: 110px;
+      margin-bottom: 28px
+    }
+
+    .splash-ring {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 2px solid var(--accent-light);
+      animation: ringPulse 2s ease-in-out infinite
+    }
+
+    .splash-ring:nth-child(2) {
+      animation-delay: .35s;
+      inset: -14px;
+      opacity: .5
+    }
+
+    .splash-ring:nth-child(3) {
+      animation-delay: .7s;
+      inset: -28px;
+      opacity: .22
+    }
+
+    @keyframes ringPulse {
+
+      0%,
+      100% {
+        transform: scale(1);
+        opacity: .5
+      }
+
+      50% {
+        transform: scale(1.07);
+        opacity: 1
+      }
+    }
+
+    .splash-icon-core {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, var(--accent), var(--warm-brown));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 20px;
+      font-weight: 900;
+      font-family: 'DM Sans', sans-serif;
+      animation: iconDrop .9s cubic-bezier(.34, 1.56, .64, 1) .2s both;
+      box-shadow: 0 12px 40px rgba(193, 127, 58, .4)
+    }
+
+    @keyframes iconDrop {
+      from {
+        transform: scale(0) rotate(-25deg);
+        opacity: 0
+      }
+
+      to {
+        transform: scale(1) rotate(0);
+        opacity: 1
+      }
+    }
+
+    .splash-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 38px;
+      font-weight: 700;
+      color: var(--text-dark);
+      letter-spacing: -.5px;
+      animation: fadeUp .7s ease .6s both
+    }
+
+    .splash-sub {
+      font-size: 14px;
+      color: var(--text-light);
+      margin-top: 6px;
+      animation: fadeUp .7s ease .8s both
+    }
+
+    .splash-bar {
+      margin-top: 44px;
+      width: 180px;
+      height: 3px;
+      background: var(--cream-3);
+      border-radius: 99px;
+      overflow: hidden;
+      animation: fadeUp .5s ease 1s both
+    }
+
+    .splash-progress {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent-light), var(--accent));
+      border-radius: 99px;
+      animation: loadBar 2.8s ease-in-out .5s both
+    }
+
+    @keyframes loadBar {
+      0% {
+        width: 0
+      }
+
+      60% {
+        width: 72%
+      }
+
+      100% {
+        width: 100%
+      }
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(14px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0)
+      }
+    }
+
+    /* SCREENS */
+    .screen {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(8px);
+      transition: opacity .25s ease, transform .25s ease;
+      background: var(--cream);
+      z-index: 1
+    }
+
+    .screen.active {
+      opacity: 1;
+      pointer-events: all;
+      transform: translateY(0);
+      z-index: 10
+    }
+
+    .screen.slide-right {
+      transform: translateX(32px)
+    }
+
+    .screen.active.slide-right {
+      transform: translateX(0)
+    }
+
+    /* LANDING */
+    #s-landing {
+      overflow-y: auto;
+      transform: none !important
+    }
+
+    .land-nav {
+      padding: 18px 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-light);
+      background: rgba(250, 247, 242, .95);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 100
+    }
+
+    .land-logo {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      font-family: 'Playfair Display', serif;
+      font-size: 21px;
+      font-weight: 700;
+      color: var(--text-dark)
+    }
+
+    .land-logo-mark {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, var(--accent), var(--warm-brown));
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .land-logo-mark ion-icon {
+      font-size: 20px;
+    }
+
+    .land-nav-btns {
+      display: flex;
+      gap: 10px
+    }
+
+    .btn-ghost {
+      background: transparent;
+      border: 1.5px solid var(--border);
+      color: var(--text-mid);
+      padding: 9px 20px;
+      border-radius: 99px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all .2s
+    }
+
+    .btn-ghost:hover {
+      border-color: var(--accent);
+      color: var(--accent)
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), var(--warm-brown));
+      border: none;
+      color: white;
+      padding: 10px 22px;
+      border-radius: 99px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .2s;
+      box-shadow: 0 4px 16px rgba(193, 127, 58, .35)
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 24px rgba(193, 127, 58, .45)
+    }
+
+    .btn-xl {
+      padding: 15px 34px !important;
+      font-size: 16px !important
+    }
+
+    .land-hero {
+      padding: 88px 60px 72px;
+      text-align: center;
+      position: relative;
+      z-index: 1
+    }
+
+    .land-hero::before {
+      content: '';
+      position: absolute;
+      top: -80px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 700px;
+      height: 700px;
+      background: radial-gradient(ellipse, rgba(193, 127, 58, .07) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0
+    }
+
+    .land-hero>* {
+      position: relative;
+      z-index: 2
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--accent-light);
+      color: var(--accent-dark);
+      padding: 6px 16px;
+      border-radius: 99px;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 24px
+    }
+
+    .land-hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(38px, 5.5vw, 70px);
+      font-weight: 700;
+      line-height: 1.1;
+      color: var(--text-dark);
+      max-width: 760px;
+      margin: 0 auto 22px
+    }
+
+    .land-hero h1 em {
+      font-style: italic;
+      color: var(--accent)
+    }
+
+    .land-hero>p {
+      font-size: 17px;
+      color: var(--text-light);
+      max-width: 500px;
+      margin: 0 auto 44px;
+      line-height: 1.7
+    }
+
+    .hero-cta {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      flex-wrap: wrap
+    }
+
+    .land-features {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 20px 60px 80px
+    }
+
+    .feat-card {
+      background: white;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius);
+      padding: 32px 28px;
+      transition: all .3s
+    }
+
+    .feat-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow);
+      border-color: var(--accent-light)
+    }
+
+    .feat-icon {
+      width: 52px;
+      height: 52px;
+      background: var(--accent-light);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      margin-bottom: 18px
+    }
+
+    .feat-card h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 19px;
+      margin-bottom: 9px;
+      color: var(--text-dark)
+    }
+
+    .feat-card p {
+      font-size: 13px;
+      color: var(--text-light);
+      line-height: 1.6
+    }
+
+    .land-cta-band {
+      background: linear-gradient(135deg, var(--text-dark), #5C4A2A);
+      margin: 0 60px 80px;
+      border-radius: 24px;
+      padding: 64px 60px;
+      text-align: center;
+      color: white
+    }
+
+    .land-cta-band h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 40px;
+      margin-bottom: 14px
+    }
+
+    .land-cta-band p {
+      color: rgba(255, 255, 255, .65);
+      font-size: 16px;
+      margin-bottom: 32px
+    }
+
+    .land-footer {
+      text-align: center;
+      padding: 36px;
+      border-top: 1px solid var(--border-light);
+      color: var(--text-light);
+      font-size: 13px
+    }
+
+    /* ========== FIXED MODAL HEIGHT ========== */
+    .modal {
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 30px !important;
+    }
+
+    .ov {
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ========== AUTH LOGO BESIDE FORM ========== */
+    .auth-split {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      padding: 8px 0;
+    }
+
+    .auth-split-logo {
+      flex-shrink: 0;
+      width: 140px;
+      text-align: center;
+    }
+
+    .auth-split-logo img {
+      width: 100%;
+      height: auto;
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+    }
+
+    .auth-split-logo .logo-fallback {
+      width: 140px;
+      height: 140px;
+      background: linear-gradient(135deg, var(--accent), var(--warm-brown));
+      border-radius: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 42px;
+      font-weight: 900;
+      font-family: 'DM Sans', sans-serif;
+      margin-bottom: 12px;
+    }
+
+    .auth-split-logo p {
+      font-size: 13px;
+      color: var(--text-light);
+      margin-top: 8px;
+    }
+
+    .auth-split-form {
+      flex: 1;
+      min-width: 280px;
+    }
+
+    /* ========== DRAG & DROP ZONE ========== */
+    .file-upload-zone.drag-over .file-upload-label {
+      border-color: var(--accent);
+      background: var(--accent-light);
+      transform: scale(1.02);
+    }
+
+    .file-upload-label {
+      transition: all 0.2s ease;
+    }
+
+    /* AUTH */
+    #s-auth {
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      overflow-y: auto
+    }
+
+    .auth-container {
+      width: 100%;
+      max-width: 860px
+    }
+
+    .auth-logo-centered {
+      text-align: center;
+      margin-bottom: 24px
+    }
+
+    .auth-logo-mark {
+      width: 56px;
+      height: 56px;
+      background: linear-gradient(135deg, var(--accent), var(--warm-brown));
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 20px;
+      font-weight: 900;
+      margin: 0 auto 12px;
+    }
+
+    .auth-logo-mark ion-icon {
+      font-size: 28px;
+    }
+
+    .auth-logo-centered h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--text-dark)
+    }
+
+    .auth-logo-centered p {
+      font-size: 13px;
+      color: var(--text-light);
+      margin-top: 4px
+    }
+
+    .auth-tabs {
+      display: flex;
+      background: var(--cream-2);
+      border-radius: 11px;
+      padding: 4px;
+      margin-bottom: 0
+    }
+
+    .auth-tab {
+      flex: 1;
+      padding: 9px;
+      border: none;
+      background: transparent;
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-light);
+      cursor: pointer;
+      transition: all .2s
+    }
+
+    .auth-tab.active {
+      background: white;
+      color: var(--text-dark);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, .08)
+    }
+
+    .auth-track-wrap {
+      overflow: hidden;
+      border-radius: 0 0 20px 20px;
+      background: white;
+      border: 1px solid var(--border-light);
+      border-top: none
+    }
+
+    .auth-tabs-wrap {
+      background: white;
+      border: 1px solid var(--border-light);
+      border-bottom: none;
+      border-radius: 20px 20px 0 0;
+      padding: 16px 24px 0
+    }
+
+    .auth-track {
+      display: flex;
+      transition: transform .4s cubic-bezier(.4, 0, .2, 1);
+      width: 100%
+    }
+
+    .auth-panel {
+      width: 100%;
+      padding: 24px;
+      flex-shrink: 0
+    }
+
+    .auth-track.show-signup {
+      transform: translateX(0)
+    }
+
+    .form-group {
+      margin-bottom: 15px
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-mid);
+      margin-bottom: 6px;
+      letter-spacing: .3px
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 11px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 11px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      color: var(--text-dark);
+      background: var(--cream);
+      outline: none;
+      transition: all .2s
+    }
+
+    .form-input::placeholder {
+      color: var(--text-light)
+    }
+
+    .form-input:focus {
+      border-color: var(--accent);
+      background: white;
+      box-shadow: 0 0 0 4px rgba(193, 127, 58, .1)
+    }
+
+    .auth-submit {
+      width: 100%;
+      padding: 13px;
+      margin-top: 4px;
+      background: linear-gradient(135deg, var(--accent), var(--warm-brown));
+      border: none;
+      border-radius: 11px;
+      color: white;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .2s;
+      box-shadow: 0 4px 16px rgba(193, 127, 58, .3)
+    }
+
+    .auth-submit:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 24px rgba(193, 127, 58, .4)
+    }
+
+    .auth-guest-btn {
+      width: 100%;
+      padding: 11px;
+      margin-top: 10px;
+      background: transparent;
+      border: 1.5px solid var(--border);
+      border-radius: 11px;
+      color: var(--text-mid);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all .2s
+    }
+
+    .auth-guest-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent)
+    }
+
+    .auth-divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 12px 0 0
+    }
+
+    .auth-divider-line {
+      flex: 1;
+      height: 1px;
+      background: var(--border-light)
+    }
+
+    .auth-divider-text {
+      font-size: 11px;
+      color: var(--text-light)
+    }
+
+    .auth-error {
+      background: var(--error-bg);
+      color: var(--error);
+      border: 1px solid var(--error-border);
+      padding: 10px 14px;
+      border-radius: 9px;
+      font-size: 13px;
+      margin-bottom: 13px;
+      display: none
+    }
+
+    .auth-error.show {
+      display: block
+    }
+
+    .auth-back {
+      text-align: center;
+      margin-top: 14px
+    }
+
+    .auth-back a {
+      color: var(--accent);
+      font-size: 13px;
+      cursor: pointer
+    }
+
+    .auth-back a:hover {
+      text-decoration: underline
+    }
+
+    /* TOPBAR */
+    .topbar {
+      position: relative;
+      height: var(--nav-h);
+      background: white;
+      border-bottom: 1px solid var(--border-light);
+      display: flex;
+      align-items: center;
+      padding: 0 28px;
+      gap: 12px;
+      flex-shrink: 0;
+      z-index: 10;
+      box-shadow: 0 2px 8px rgba(139, 111, 71, .05)
+    }
+
+    .topbar-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'Playfair Display', serif;
+      font-size: 19px;
+      font-weight: 700;
+      color: var(--text-dark);
+      cursor: pointer;
+      text-decoration: none;
+      margin: 0 auto;
+    }
+
+    .logo-mark {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, var(--accent), var(--warm-brown));
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 12px;
+      font-weight: 900;
+      flex-shrink: 0
+    }
+
+    .logo-mark ion-icon {
+      font-size: 16px;
+    }
+
+    .topbar-sep {
+      color: var(--border);
+      font-size: 18px;
+      user-select: none
+    }
+
+    .topbar-crumb {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-light);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 220px
+    }
+
+    .topbar-crumb.active {
+      color: var(--text-dark);
+      font-weight: 600
+    }
+
+    .topbar-right {
+      position: absolute;
+      right: 28px;
+      display: flex;
+      gap: 8px;
+      align-items: center
+    }
+
+    .save-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 100px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--success);
+      background: var(--success-bg);
+      border: 1px solid var(--success-border);
+      opacity: 0;
+      transition: opacity .4s
+    }
+
+    .save-pill.show {
+      opacity: 1
+    }
+
+    .user-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 5px 14px 5px 5px;
+      background: var(--cream);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      cursor: pointer;
+      transition: all .2s
+    }
+
+    .user-pill:hover {
+      border-color: var(--accent)
+    }
+
+    .user-avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--warm-brown));
+      color: white;
+      font-size: 10px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center
+    }
+
+    .user-name {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-dark)
+    }
+
+    .back-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--text-light);
+      font-size: 13px;
+      font-weight: 500;
+      padding: 6px 10px;
+      border-radius: var(--radius-sm);
+      transition: all .15s;
+      font-family: 'DM Sans', sans-serif;
+      flex-shrink: 0
+    }
+
+    .back-btn:hover {
+      background: var(--cream-2);
+      color: var(--text-dark)
+    }
+
+    /* BUTTONS */
+    .btn {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 8px 16px;
+      border-radius: 99px;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all .15s;
+      white-space: nowrap
+    }
+
+    .btn.btn-primary {
+      background: linear-gradient(135deg, var(--accent), var(--warm-brown));
+      color: white;
+      box-shadow: 0 4px 16px rgba(193, 127, 58, .3)
+    }
+
+    .btn.btn-primary:hover {
+      box-shadow: 0 6px 24px rgba(193, 127, 58, .4);
+      transform: translateY(-1px)
+    }
+
+    .btn.btn-secondary {
+      background: var(--cream-2);
+      color: var(--text-mid);
+      border: 1px solid var(--border)
+    }
+
+    .btn.btn-secondary:hover {
+      background: var(--cream-3)
+    }
+
+    .btn.btn-ghost-app {
+      background: transparent;
+      color: var(--text-mid);
+      border: 1px solid var(--border)
+    }
+
+    .btn.btn-ghost-app:hover {
+      background: var(--cream-2)
+    }
+
+    .btn.btn-danger {
+      background: var(--error-bg);
+      color: var(--error);
+      border: 1px solid var(--error-border)
+    }
+
+    .btn.btn-danger:hover {
+      background: var(--error);
+      color: white
+    }
+
+    .btn.btn-sm {
+      padding: 6px 14px;
+      font-size: 12px
+    }
+
+    .btn.btn-xs {
+      padding: 4px 10px;
+      font-size: 11px;
+      border-radius: 7px
+    }
+
+    .icon-btn {
+      width: 32px;
+      height: 32px;
+      padding: 0;
+      border-radius: 9px;
+      background: var(--cream-2);
+      border: 1px solid var(--border);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-light);
+      font-size: 14px;
+      transition: all .15s
+    }
+
+    .icon-btn:hover {
+      background: var(--cream-3);
+      color: var(--text-dark)
+    }
+
+    /* HOME */
+    .screen-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 28px
+    }
+
+    .home-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+      gap: 12px
+    }
+
+    .home-greeting {
+      font-family: 'Playfair Display', serif;
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 4px
+    }
+
+    .home-sub {
+      font-size: 13px;
+      color: var(--text-light)
+    }
+
+    .classrooms-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+      gap: 18px
+    }
+
+    .classroom-card {
+      background: white;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius);
+      padding: 26px;
+      transition: all .25s;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden
+    }
+
+    .classroom-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent-light), var(--accent));
+      transform: scaleX(0);
+      transition: transform .3s ease
+    }
+
+    .classroom-card:hover::before {
+      transform: scaleX(1)
+    }
+
+    .classroom-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow);
+      border-color: var(--accent-light)
+    }
+
+    .cc-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 14px
+    }
+
+    .cc-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      flex-shrink: 0;
+      background: var(--accent-light)
+    }
+
+    .cc-del {
+      width: 28px;
+      height: 28px;
+      background: none;
+      border: none;
+      border-radius: 7px;
+      cursor: pointer;
+      color: var(--text-light);
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: all .15s
+    }
+
+    .classroom-card:hover .cc-del {
+      opacity: 1
+    }
+
+    .cc-del:hover {
+      background: var(--error-bg);
+      color: var(--error)
+    }
+
+    .cc-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 3px
+    }
+
+    .cc-subject {
+      font-size: 12px;
+      color: var(--text-light);
+      margin-bottom: 18px
+    }
+
+    .cc-stats {
+      display: flex;
+      gap: 18px
+    }
+
+    .cc-stat-val {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text-dark);
+      letter-spacing: -.5px
+    }
+
+    .cc-stat-lbl {
+      font-size: 10px;
+      color: var(--text-light);
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      margin-top: 2px
+    }
+
+    .new-class-card {
+      background: white;
+      border: 2px dashed var(--border);
+      border-radius: var(--radius);
+      padding: 26px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      color: var(--text-light);
+      font-size: 13px;
+      font-weight: 500;
+      transition: all .2s;
+      min-height: 180px
+    }
+
+    .new-class-card:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: var(--accent-light)
+    }
+
+    .new-class-plus {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--cream-2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      transition: all .2s
+    }
+
+    .new-class-card:hover .new-class-plus {
+      background: var(--accent);
+      color: white
+    }
+
+    /* TABS */
+    .tabs-bar {
+      background: white;
+      border-bottom: 1px solid var(--border-light);
+      display: flex;
+      padding: 0 20px;
+      flex-shrink: 0;
+      overflow-x: auto;
+      scrollbar-width: none
+    }
+
+    .tabs-bar::-webkit-scrollbar {
+      display: none
+    }
+
+    .tab-btn {
+      padding: 16px 18px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-light);
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: color .15s;
+      display: flex;
+      align-items: center;
+      gap: 6px
+    }
+
+    .tab-btn:hover {
+      color: var(--text-dark)
+    }
+
+    .tab-btn.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+      font-weight: 600
+    }
+
+    .tab-badge {
+      background: var(--cream-2);
+      color: var(--text-light);
+      padding: 1px 7px;
+      border-radius: 10px;
+      font-size: 10px;
+      font-weight: 700
+    }
+
+    .tab-btn.active .tab-badge {
+      background: var(--accent-light);
+      color: var(--accent-dark)
+    }
+
+    .tab-panel {
+      display: none;
+      flex: 1;
+      overflow: hidden;
+      flex-direction: column
+    }
+
+    .tab-panel.active {
+      display: flex
+    }
+
+    .panel-hdr {
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1px solid var(--border-light);
+      background: white;
+      flex-shrink: 0
+    }
+
+    .panel-hdr-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-dark);
+      font-family: 'Playfair Display', serif
+    }
+
+    .panel-hdr-count {
+      background: var(--cream-2);
+      color: var(--text-light);
+      padding: 2px 9px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600
+    }
+
+    .panel-hdr-right {
+      margin-left: auto;
+      display: flex;
+      gap: 8px
+    }
+
+    .panel-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px 20px
+    }
+
+    /* STUDENTS */
+    .student-item {
+      background: white;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      transition: all .2s
+    }
+
+    .student-item:hover {
+      border-color: var(--accent-light);
+      box-shadow: var(--shadow)
+    }
+
+    .s-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 11px;
+      background: linear-gradient(135deg, var(--accent), var(--warm-brown));
+      color: white;
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0
+    }
+
+    .s-info {
+      flex: 1;
+      min-width: 0
+    }
+
+    .s-name {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 2px;
+      color: var(--text-dark)
+    }
+
+    .s-meta {
+      font-size: 11px;
+      color: var(--text-light);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px
+    }
+
+    .s-att-pills {
+      display: flex;
+      gap: 6px;
+      flex-shrink: 0
+    }
+
+    .pill {
+      padding: 3px 10px;
+      border-radius: 100px;
+      font-size: 11px;
+      font-weight: 700;
+      white-space: nowrap
+    }
+
+    .pill-green {
+      background: var(--success-bg);
+      color: var(--success);
+      border: 1px solid var(--success-border)
+    }
+
+    .pill-amber {
+      background: var(--warning-bg);
+      color: var(--warning);
+      border: 1px solid var(--warning-border)
+    }
+
+    .pill-red {
+      background: var(--error-bg);
+      color: var(--error);
+      border: 1px solid var(--error-border)
+    }
+
+    .s-actions {
+      display: flex;
+      gap: 6px;
+      opacity: 0;
+      transition: opacity .15s
+    }
+
+    .student-item:hover .s-actions {
+      opacity: 1
+    }
+
+    /* LESSONS */
+    .lessons-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px
+    }
+
+    .lesson-item {
+      background: white;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-sm);
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      cursor: pointer;
+      transition: all .2s;
+      position: relative
+    }
+
+    .lesson-item:hover {
+      box-shadow: var(--shadow);
+      border-color: var(--accent-light);
+      transform: translateX(3px)
+    }
+
+    .lesson-item.ielts-lesson {
+      border-left: 4px solid var(--ielts-blue)
+    }
+
+    .lesson-number {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, var(--accent), var(--warm-brown));
+      border-radius: 9px;
+      color: white;
+      font-size: 13px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0
+    }
+
+    .lesson-item.ielts-lesson .lesson-number {
+      background: linear-gradient(135deg, var(--ielts-dark), var(--ielts-blue))
+    }
+
+    .lesson-info {
+      flex: 1;
+      min-width: 0
+    }
+
+    .lesson-name {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis
+    }
+
+    .lesson-date-row {
+      font-size: 12px;
+      color: var(--text-light);
+      display: flex;
+      align-items: center;
+      gap: 8px
+    }
+
+    .lesson-att-mini {
+      display: flex;
+      gap: 5px;
+      flex-shrink: 0
+    }
+
+    .att-dot {
+      width: 24px;
+      height: 24px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 700
+    }
+
+    .att-dot.p {
+      background: var(--success-bg);
+      color: var(--success);
+      border: 1px solid var(--success-border)
+    }
+
+    .att-dot.l {
+      background: var(--warning-bg);
+      color: var(--warning);
+      border: 1px solid var(--warning-border)
+    }
+
+    .att-dot.a {
+      background: var(--error-bg);
+      color: var(--error);
+      border: 1px solid var(--error-border)
+    }
+
+    .lesson-arrow {
+      color: var(--text-light);
+      font-size: 16px;
+      transition: all .15s
+    }
+
+    .lesson-item:hover .lesson-arrow {
+      color: var(--accent);
+      transform: translateX(4px)
+    }
+
+    .lesson-del {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 26px;
+      height: 26px;
+      border-radius: 6px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--text-light);
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: all .15s
+    }
+
+    .lesson-item:hover .lesson-del {
+      opacity: 1
+    }
+
+    .lesson-del:hover {
+      background: var(--error-bg);
+      color: var(--error)
+    }
+
+    /* IELTS MODE - SIMPLIFIED */
+    .ielts-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: linear-gradient(135deg, var(--ielts-dark), var(--ielts-blue));
+      color: white;
+      padding: 3px 10px;
+      border-radius: 100px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .5px
+    }
+
+    .mode-toggle {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 18px
+    }
+
+    .mode-btn {
+      flex: 1;
+      padding: 14px 18px;
+      border: 2px solid var(--border);
+      background: white;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all .2s;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-mid);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      min-height: 80px
+    }
+
+    .mode-btn:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px)
+    }
+
+    .mode-btn.active {
+      border-color: var(--accent);
+      background: var(--accent-light);
+      color: var(--accent-dark)
+    }
+
+    .mode-btn.ielts-active {
+      border-color: var(--ielts-blue);
+      background: #eff6ff;
+      color: var(--ielts-dark)
+    }
+
+    .mode-icon {
+      font-size: 24px
+    }
+
+    .mode-label {
+      font-size: 13px;
+      font-weight: 600
+    }
+
+    .mode-desc {
+      font-size: 10px;
+      color: var(--text-light);
+      margin-top: 2px;
+      text-align: center;
+      line-height: 1.3
+    }
+
+    .band-score-cell {
+      text-align: center;
+      font-weight: 700;
+      font-size: 14px
+    }
+
+    .band-9 {
+      color: #10b981
+    }
+
+    .band-8 {
+      color: #34d399
+    }
+
+    .band-7 {
+      color: #fbbf24
+    }
+
+    .band-6 {
+      color: #fb923c
+    }
+
+    .band-5 {
+      color: #f87171
+    }
+
+    .band-low {
+      color: #ef4444
+    }
+
+    .overall-band-col {
+      background: linear-gradient(135deg, var(--ielts-dark), var(--ielts-blue)) !important;
+      color: white !important
+    }
+
+    .overall-band-cell {
+      background: linear-gradient(135deg, var(--ielts-dark), var(--ielts-blue)) !important;
+      color: white !important;
+      font-weight: 800 !important;
+      font-size: 15px !important;
+      text-align: center !important;
+      letter-spacing: -.5px;
+      border: none !important
+    }
+
+    /* GRADEBOOK */
+    #s-lesson {
+      z-index: 4
+    }
+
+    .lesson-gb-header {
+      background: white;
+      border-bottom: 1px solid var(--border-light);
+      padding: 14px 24px;
+      flex-shrink: 0
+    }
+
+    .lesson-gb-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 2px
+    }
+
+    .lesson-gb-date {
+      font-size: 12px;
+      color: var(--text-light)
+    }
+
+    .stats-strip {
+      background: white;
+      border-bottom: 1px solid var(--border-light);
+      padding: 10px 24px;
+      display: flex;
+      gap: 10px;
+      flex-shrink: 0;
+      overflow-x: auto;
+      scrollbar-width: none
+    }
+
+    .stats-strip::-webkit-scrollbar {
+      display: none
+    }
+
+    .stat-chip {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 6px 14px;
+      background: var(--cream);
+      border: 1px solid var(--border-light);
+      border-radius: 100px;
+      font-size: 12px;
+      font-weight: 500;
+      white-space: nowrap;
+      flex-shrink: 0;
+      color: var(--text-mid)
+    }
+
+    .stat-chip-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%
+    }
+
+    .gradebook-scroll {
+      flex: 1;
+      overflow: auto
+    }
+
+    .gb-table {
+      width: max-content;
+      min-width: 100%;
+      border-collapse: separate;
+      border-spacing: 0
+    }
+
+    .gb-table thead {
+      position: sticky;
+      top: 0;
+      z-index: 10
+    }
+
+    .gb-table th {
+      background: var(--text-dark);
+      color: white;
+      padding: 11px 16px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .7px;
+      text-align: left;
+      white-space: nowrap;
+      border-right: 1px solid rgba(255, 255, 255, .08)
+    }
+
+    .gb-table th:last-child {
+      border-right: none
+    }
+
+    .gb-table th.th-student {
+      position: sticky;
+      left: 0;
+      z-index: 11;
+      min-width: 190px;
+      border-right: 1px solid rgba(255, 255, 255, .15)
+    }
+
+    .th-inner-flex {
+      display: flex;
+      align-items: center;
+      gap: 6px
+    }
+
+    .th-col-actions {
+      display: flex;
+      gap: 2px;
+      opacity: 0;
+      transition: opacity .15s;
+      margin-left: auto
+    }
+
+    th:hover .th-col-actions {
+      opacity: 1
+    }
+
+    .th-col-btn {
+      width: 18px;
+      height: 18px;
+      border-radius: 3px;
+      background: rgba(255, 255, 255, .15);
+      border: none;
+      color: white;
+      font-size: 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center
+    }
+
+    .th-col-btn:hover {
+      background: rgba(255, 255, 255, .3)
+    }
+
+    .gb-table tbody tr:hover td {
+      background: var(--accent-light) !important
+    }
+
+    .gb-table tbody tr:nth-child(even) td {
+      background: var(--cream-2)
+    }
+
+    .gb-table td {
+      background: white;
+      border-bottom: 1px solid var(--border-light);
+      border-right: 1px solid var(--border-light);
+      padding: 0;
+      height: 48px
+    }
+
+    .gb-table td:last-child {
+      border-right: none
+    }
+
+    .gb-table td.td-student {
+      padding: 0 14px;
+      position: sticky;
+      left: 0;
+      z-index: 5;
+      background: inherit;
+      border-right: 1px solid var(--border)
+    }
+
+    .td-student-inner {
+      display: flex;
+      align-items: center;
+      gap: 9px
+    }
+
+    .td-mini-av {
+      width: 28px;
+      height: 28px;
+      border-radius: 7px;
+      background: linear-gradient(135deg, var(--accent), var(--warm-brown));
+      color: white;
+      font-size: 9px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0
+    }
+
+    .td-name-text {
+      font-size: 13px;
+      font-weight: 600;
+      white-space: nowrap;
+      color: var(--text-dark)
+    }
+
+    .td-att-cell {
+      text-align: center;
+      width: 130px;
+      padding: 0 12px
+    }
+
+    .att-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 12px;
+      border-radius: 100px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      user-select: none;
+      transition: transform .1s, filter .1s;
+      white-space: nowrap
+    }
+
+    .att-chip:hover {
+      filter: brightness(.93)
+    }
+
+    .att-chip:active {
+      transform: scale(.94)
+    }
+
+    .att-chip.present {
+      background: var(--success-bg);
+      color: var(--success);
+      border: 1px solid var(--success-border)
+    }
+
+    .att-chip.late {
+      background: var(--warning-bg);
+      color: var(--warning);
+      border: 1px solid var(--warning-border)
+    }
+
+    .att-chip.absent {
+      background: var(--error-bg);
+      color: var(--error);
+      border: 1px solid var(--error-border)
+    }
+
+    .grade-inp {
+      width: 100%;
+      height: 48px;
+      border: none;
+      background: transparent;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-dark);
+      padding: 0 16px;
+      outline: none
+    }
+
+    .grade-inp:focus {
+      background: var(--accent-light);
+      box-shadow: inset 0 0 0 2px var(--accent)
+    }
+
+    .grade-inp::placeholder {
+      color: var(--border)
+    }
+
+    .grade-inp:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      background: repeating-linear-gradient(45deg, #f9f9f9, #f9f9f9 10px, #f3f3f3 10px, #f3f3f3 20px)
+    }
+
+    .add-student-row td {
+      background: var(--cream) !important
+    }
+
+    .add-row-inp {
+      width: 100%;
+      height: 46px;
+      border: none;
+      background: transparent;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      color: var(--text-light);
+      padding: 0 14px;
+      outline: none;
+      font-style: italic
+    }
+
+    .add-row-inp:focus {
+      background: var(--accent-light);
+      font-style: normal
+    }
+
+    .add-row-inp::placeholder {
+      color: var(--border)
+    }
+
+    /* ANALYTICS */
+    .analytics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 10px;
+      margin-bottom: 20px
+    }
+
+    .astat-card {
+      background: white;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-sm);
+      padding: 18px
+    }
+
+    .astat-val {
+      font-size: 30px;
+      font-weight: 800;
+      letter-spacing: -1px;
+      color: var(--text-dark);
+      font-family: 'Playfair Display', serif
+    }
+
+    .astat-lbl {
+      font-size: 11px;
+      color: var(--text-light);
+      margin-top: 3px
+    }
+
+    .att-table {
+      width: 100%;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      border-collapse: collapse
+    }
+
+    .att-table th {
+      background: var(--text-dark);
+      color: white;
+      padding: 11px 16px;
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .7px;
+      text-align: left
+    }
+
+    .att-table td {
+      padding: 11px 16px;
+      border-bottom: 1px solid var(--border-light);
+      font-size: 13px
+    }
+
+    .att-table tr:last-child td {
+      border-bottom: none
+    }
+
+    .att-table tr:hover td {
+      background: var(--accent-light)
+    }
+
+    .att-table tr:nth-child(even) td {
+      background: var(--cream-2)
+    }
+
+    .att-table tr:nth-child(even):hover td {
+      background: var(--accent-light)
+    }
+
+    .rate-bar-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px
+    }
+
+    .rate-bar {
+      width: 72px;
+      height: 5px;
+      background: var(--cream-3);
+      border-radius: 3px;
+      overflow: hidden;
+      flex-shrink: 0
+    }
+
+    .rate-bar-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width .4s
+    }
+
+    /* MODALS */
+    .ov {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(44, 36, 22, .45);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      backdrop-filter: blur(6px)
+    }
+
+    .ov.open {
+      display: flex
+    }
+
+    .modal {
+      background: white;
+      border-radius: 20px;
+      width: 100%;
+      max-width: 460px;
+      padding: 30px;
+      box-shadow: var(--shadow-lg);
+      animation: popIn .22s cubic-bezier(.34, 1.56, .64, 1);
+      border: 1px solid var(--border-light)
+    }
+
+    .modal-lg {
+      max-width: 540px
+    }
+
+    @keyframes popIn {
+      from {
+        transform: scale(.88);
+        opacity: 0
+      }
+
+      to {
+        transform: scale(1);
+        opacity: 1
+      }
+    }
+
+    .modal-hdr {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 22px
+    }
+
+    .modal-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 11px;
+      background: var(--accent-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0
+    }
+
+    .modal-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-dark)
+    }
+
+    .modal-sub {
+      font-size: 12px;
+      color: var(--text-light);
+      margin-top: 2px
+    }
+
+    .modal-foot {
+      display: flex;
+      gap: 8px;
+      margin-top: 22px;
+      justify-content: flex-end
+    }
+
+    .fg {
+      margin-bottom: 14px
+    }
+
+    .flabel {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-mid);
+      letter-spacing: .5px;
+      margin-bottom: 7px;
+      text-transform: uppercase
+    }
+
+    .finput,
+    .fselect {
+      width: 100%;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      padding: 10px 13px;
+      border: 1.5px solid var(--border);
+      border-radius: 11px;
+      background: var(--cream);
+      color: var(--text-dark);
+      outline: none;
+      transition: all .15s
+    }
+
+    .finput:focus,
+    .fselect:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px rgba(193, 127, 58, .1);
+      background: white
+    }
+
+    .frow {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px
+    }
+
+    html,
+    body {
+      height: 100% !important
+    }
+
+    body.modal-open {
+      overflow: hidden !important
+    }
+
+    /* SHEET */
+    .sheet-ov {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(44, 36, 22, .35);
+      z-index: 200;
+      justify-content: flex-end;
+      backdrop-filter: blur(6px)
+    }
+
+    .sheet-ov.open {
+      display: flex
+    }
+
+    .sheet {
+      background: white;
+      width: 100%;
+      max-width: 430px;
+      height: 100%;
+      overflow-y: auto;
+      padding: 30px;
+      box-shadow: var(--shadow-lg);
+      animation: sheetIn .22s ease;
+      border-left: 1px solid var(--border-light)
+    }
+
+    @keyframes sheetIn {
+      from {
+        transform: translateX(48px);
+        opacity: 0
+      }
+
+      to {
+        transform: translateX(0);
+        opacity: 1
+      }
+    }
+
+    .sheet-hdr {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      margin-bottom: 26px
+    }
+
+    .sheet-av {
+      width: 54px;
+      height: 54px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--accent), var(--warm-brown));
+      color: white;
+      font-size: 17px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0
+    }
+
+    .sheet-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-dark)
+    }
+
+    .sheet-class-name {
+      font-size: 12px;
+      color: var(--text-light);
+      margin-top: 3px
+    }
+
+    .sheet-x {
+      margin-left: auto;
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      background: var(--cream-2);
+      border: none;
+      cursor: pointer;
+      font-size: 17px;
+      color: var(--text-light);
+      display: flex;
+      align-items: center;
+      justify-content: center
+    }
+
+    .sheet-x:hover {
+      background: var(--cream-3)
+    }
+
+    .sheet-sec {
+      margin-bottom: 24px
+    }
+
+    .sheet-sec-title {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .9px;
+      color: var(--text-light);
+      margin-bottom: 11px
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px
+    }
+
+    .info-card {
+      background: var(--cream-2);
+      border: 1.5px solid var(--border-light);
+      border-radius: var(--radius-sm);
+      padding: 10px 13px;
+      cursor: pointer;
+      transition: border-color .15s, background .15s, box-shadow .15s
+    }
+
+    .info-card:hover:not(.no-edit) {
+      border-color: var(--accent);
+      background: white
+    }
+
+    .info-card.editing {
+      border-color: var(--accent);
+      background: white;
+      box-shadow: 0 0 0 3px rgba(193, 127, 58, .1)
+    }
+
+    .info-card-label {
+      font-size: 10px;
+      color: var(--text-light);
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between
+    }
+
+    .edit-hint {
+      font-size: 9px;
+      color: var(--accent);
+      opacity: 0;
+      transition: opacity .15s
+    }
+
+    .info-card:hover:not(.no-edit) .edit-hint {
+      opacity: 1
+    }
+
+    .info-card-val {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-dark);
+      min-height: 18px;
+      word-break: break-all
+    }
+
+    .info-card-val.empty {
+      color: var(--border);
+      font-weight: 400
+    }
+
+    .info-card-input {
+      width: 100%;
+      border: none;
+      background: transparent;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-dark);
+      outline: none;
+      padding: 0
+    }
+
+    .history-row {
+      display: flex;
+      align-items: center;
+      padding: 9px 12px;
+      background: var(--cream-2);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-sm);
+      margin-bottom: 5px;
+      gap: 10px
+    }
+
+    .history-date {
+      font-size: 12px;
+      font-weight: 600;
+      flex: 1;
+      color: var(--text-dark)
+    }
+
+    .history-topic {
+      font-size: 12px;
+      color: var(--text-light);
+      flex: 2;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis
+    }
+
+    /* TOAST */
+    .toast {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--text-dark);
+      color: white;
+      padding: 10px 22px;
+      border-radius: 100px;
+      font-size: 13px;
+      font-weight: 500;
+      z-index: 999;
+      white-space: nowrap;
+      box-shadow: var(--shadow-lg);
+      animation: toastPop .2s ease;
+      pointer-events: none
+    }
+
+    @keyframes toastPop {
+      from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(8px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0)
+      }
+    }
+
+    .confirm-modal {
+      max-width: 360px
+    }
+
+    .confirm-desc {
+      font-size: 13px;
+      color: var(--text-mid);
+      line-height: 1.6
+    }
+
+    .empty-state {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      color: var(--text-light);
+      padding: 56px 24px;
+      text-align: center
+    }
+
+    .empty-icon {
+      font-size: 40px;
+      margin-bottom: 6px
+    }
+
+    .empty-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text-mid)
+    }
+
+    .empty-desc {
+      font-size: 13px;
+      line-height: 1.6;
+      max-width: 280px
+    }
+
+    .fade-up {
+      animation: fadeUp .2s ease forwards
+    }
+
+    /* Export Modal - Better Layout */
+    .export-btn {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 16px 18px;
+      border: 2px solid var(--border-light);
+      border-radius: 12px;
+      background: white;
+      cursor: pointer;
+      transition: all .2s;
+      text-align: left;
+      width: 100%
+    }
+
+    .export-btn:hover {
+      border-color: var(--accent);
+      background: var(--accent-light);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow)
+    }
+
+    .export-btn-icon {
+      font-size: 28px;
+      flex-shrink: 0
+    }
+
+    .export-btn-text {
+      flex: 1
+    }
+
+    .export-btn-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-dark);
+      margin-bottom: 2px
+    }
+
+    .export-btn-desc {
+      font-size: 12px;
+      color: var(--text-light)
+    }
+
+    .export-settings-link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      background: var(--cream-2);
+      color: var(--text-mid);
+      cursor: pointer;
+      transition: all .2s;
+      font-size: 14px;
+      font-weight: 500;
+      margin-top: 12px;
+      width: 100%
+    }
+
+    .export-settings-link:hover {
+      border-color: var(--accent);
+      background: var(--accent-light);
+      color: var(--accent-dark)
+    }
+
+    /* File Upload */
+    .file-upload-zone {
+      margin-top: 8px
+    }
+
+    .file-upload-input {
+      display: none
+    }
+
+    .file-upload-label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 20px;
+      border: 2px dashed var(--border);
+      border-radius: 12px;
+      background: var(--cream-2);
+      cursor: pointer;
+      transition: all .2s;
+      color: var(--text-mid);
+      font-size: 14px
+    }
+
+    .file-upload-label:hover {
+      border-color: var(--accent);
+      background: var(--accent-light);
+      color: var(--accent-dark)
+    }
+
+    .file-upload-icon {
+      font-size: 24px
+    }
+
+    .file-preview-zone {
+      margin-top: 12px;
+      padding: 12px;
+      background: white;
+      border: 1px solid var(--border-light);
+      border-radius: 10px;
+      display: none;
+      align-items: center;
+      gap: 12px
+    }
+
+    .file-preview-zone.show {
+      display: flex
+    }
+
+    .file-preview-img {
+      max-height: 60px;
+      max-width: 80px;
+      border-radius: 6px;
+      border: 1px solid var(--border)
+    }
+
+    .file-preview-info {
+      flex: 1
+    }
+
+    .file-preview-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-dark);
+      margin-bottom: 2px
+    }
+
+    .file-preview-size {
+      font-size: 12px;
+      color: var(--text-light)
+    }
+
+    .file-preview-remove {
+      background: var(--error-bg);
+      border: none;
+      color: var(--error);
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 500;
+      transition: all .2s
+    }
+
+    .file-preview-remove:hover {
+      background: var(--error);
+      color: white
+    }
+
+    /* VS Code Color Picker */
+    .color-picker-container {
+      margin-top: 12px
+    }
+
+    .color-preview-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      background: var(--cream-2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all .2s
+    }
+
+    .color-preview-bar:hover {
+      border-color: var(--accent)
+    }
+
+    .color-swatch {
+      width: 48px;
+      height: 48px;
+      border-radius: 8px;
+      border: 2px solid var(--border);
+      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .1);
+      flex-shrink: 0
+    }
+
+    .color-info {
+      flex: 1
+    }
+
+    .color-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-dark);
+      margin-bottom: 4px
+    }
+
+    .color-value {
+      font-size: 12px;
+      color: var(--text-light);
+      font-family: 'Courier New', monospace
+    }
+
+    .color-picker-dropdown {
+      display: none;
+      margin-top: 12px;
+      padding: 16px;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      box-shadow: var(--shadow)
+    }
+
+    .color-picker-dropdown.show {
+      display: block;
+      animation: fadeIn .2s
+    }
+
+    .color-gradient-bar {
+      width: 100%;
+      height: 180px;
+      border-radius: 8px;
+      margin-bottom: 12px;
+      position: relative;
+      cursor: crosshair;
+      border: 1px solid var(--border)
+    }
+
+    .color-gradient-cursor {
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      border: 2px solid white;
+      border-radius: 50%;
+      box-shadow: 0 0 0 1px rgba(0, 0, 0, .3), 0 2px 4px rgba(0, 0, 0, .2);
+      pointer-events: none;
+      transform: translate(-50%, -50%)
+    }
+
+    .color-sliders {
+      display: flex;
+      flex-direction: column;
+      gap: 12px
+    }
+
+    .color-slider-row {
+      display: flex;
+      align-items: center;
+      gap: 12px
+    }
+
+    .color-slider-label {
+      width: 70px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-mid)
+    }
+
+    .color-slider {
+      flex: 1;
+      -webkit-appearance: none;
+      appearance: none;
+      height: 8px;
+      border-radius: 4px;
+      outline: none
+    }
+
+    .color-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: white;
+      border: 2px solid var(--accent);
+      cursor: pointer;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, .2)
+    }
+
+    .color-slider::-moz-range-thumb {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: white;
+      border: 2px solid var(--accent);
+      cursor: pointer;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, .2)
+    }
+
+    .hue-slider {
+      background: linear-gradient(to right, hsl(0, 100%, 50%)0%, hsl(60, 100%, 50%)17%, hsl(120, 100%, 50%)33%, hsl(180, 100%, 50%)50%, hsl(240, 100%, 50%)67%, hsl(300, 100%, 50%)83%, hsl(360, 100%, 50%)100%)
+    }
+
+    .opacity-slider {
+      background: linear-gradient(to right, transparent, currentColor);
+      position: relative
+    }
+
+    .opacity-slider::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(45deg, #ccc 25%, transparent 25%), linear-gradient(-45deg, #ccc 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #ccc 75%), linear-gradient(-45deg, transparent 75%, #ccc 75%);
+      background-size: 8px 8px;
+      background-position: 0 0, 0 4px, 4px -4px, -4px 0px;
+      border-radius: 4px;
+      z-index: -1
+    }
+
+    .color-slider-value {
+      min-width: 40px;
+      text-align: right;
+      font-size: 12px;
+      color: var(--text-mid);
+      font-family: 'Courier New', monospace
+    }
+
+    /* MOBILE RESPONSIVENESS */
+    @media (max-width: 768px) {
+      .land-nav {
+        padding: 14px 20px;
+      }
+
+      .land-hero {
+        padding: 50px 20px 40px;
+      }
+
+      .land-features {
+        grid-template-columns: 1fr;
+        padding: 20px;
+      }
+
+      .land-cta-band {
+        margin: 0 20px 60px;
+        padding: 40px 24px;
+      }
+
+      .land-cta-band h2 {
+        font-size: 28px;
+      }
+
+      .screen-body {
+        padding: 16px;
+      }
+
+      .classrooms-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .topbar {
+        padding: 0 16px;
+      }
+
+      .frow {
+        grid-template-columns: 1fr;
+      }
+
+      .student-item {
+        flex-wrap: wrap;
+      }
+
+      .s-actions {
+        opacity: 1;
+        width: 100%;
+        justify-content: flex-end;
+      }
+
+      .lesson-item {
+        flex-wrap: wrap;
+      }
+
+      .lesson-att-mini {
+        margin-left: 52px;
+      }
+
+      .modal {
+        padding: 20px !important;
+        max-width: 95% !important;
+      }
+
+      .info-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .user-name {
+        display: none;
+      }
+
+      .user-pill {
+        padding: 5px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .topbar-crumb {
+        max-width: 120px;
+      }
+
+      .panel-hdr {
+        flex-wrap: wrap;
+      }
+
+      .panel-hdr-right {
+        margin-left: 0;
+        width: 100%;
+      }
+
+      .panel-hdr-right .btn {
+        flex: 1;
+      }
+
+      .lesson-number {
+        width: 30px;
+        height: 30px;
+        font-size: 11px;
+      }
+
+      .history-row {
+        flex-wrap: wrap;
+      }
+
+      .history-date {
+        width: 100%;
+      }
+
+      .history-topic {
+        width: 100%;
+      }
+    }
+
+    /* Touch-friendly improvements */
+    @media (hover: none) and (pointer: coarse) {
+      .btn, 
+      .tab-btn,
+      .student-item,
+      .lesson-item,
+      .info-card,
+      .export-btn {
+        min-height: 44px;
+      }
+
+      .s-actions,
+      .cc-del,
+      .lesson-del,
+      .th-col-actions {
+        opacity: 1;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- SPLASH -->
+  <div id="splash">
+    <div class="splash-logo-wrap">
+      <div class="splash-ring"></div>
+      <div class="splash-ring"></div>
+      <div class="splash-ring"></div>
+      <div class="splash-icon-core">
+        <ion-icon name="medical-outline"></ion-icon>
+      </div>
+    </div>
+    <div class="splash-title">GradeJournal</div>
+    <div class="splash-sub">Professional Teacher Gradebook</div>
+    <div class="splash-bar">
+      <div class="splash-progress"></div>
+    </div>
+  </div>
+
+  <!-- LANDING -->
+  <div id="s-landing" class="screen">
+    <nav class="land-nav">
+      <div class="land-logo">
+        <div class="land-logo-mark">
+          <ion-icon name="medical-outline"></ion-icon>
+        </div>
+        GradeJournal
+      </div>
+      <div class="land-nav-btns">
+        <button class="btn-ghost" onclick="showAuth('signin')">Log In</button>
+        <button class="btn-primary" onclick="openDemoRequest()">Request Demo →</button>
+        <button class="btn-ghost" onclick="showContact()">Contact</button>
+      </div>
+    </nav>
+    <section class="land-hero">
+      <div class="hero-badge">✦ Built for professional educators</div>
+      <h1>The <em>smarter</em> way to run your gradebook</h1>
+      <p>Organize classrooms, track attendance, record grades — with IELTS mode, bulk operations, and professional
+        exports.</p>
+      <div class="hero-cta">
+        <button class="btn-primary btn-xl" onclick="showAuth('signin')">Log In →</button>
+        <button class="btn-ghost btn-xl" onclick="openDemoRequest()">Request Demo</button>
+      </div>
+    </section>
+    <div class="land-features">
+      <div class="feat-card">
+        <div class="feat-icon">📊</div>
+        <h3>Powerful Gradebook</h3>
+        <p>Click any cell to enter grades. Bulk operations for speed. Export to PDF/Excel.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🎯</div>
+        <h3>IELTS Mode</h3>
+        <p>Four-section scoring (L/R/W/S) with auto-calculated Overall Band. Built for language teachers.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">👥</div>
+        <h3>Student Profiles</h3>
+        <p>Phone numbers, parent contacts, notes — click any field to edit inline.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">✅</div>
+        <h3>Smart Attendance</h3>
+        <p>Present / Late / Absent. Late counts as attended. Accurate rates across all views.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">📈</div>
+        <h3>Analytics Dashboard</h3>
+        <p>Per-student rates, history, and totals. Export full class reports as PDF or Excel.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">💾</div>
+        <h3>Works Offline</h3>
+        <p>Data saved locally. No internet required after first load. Nothing is ever lost.</p>
+      </div>
+    </div>
+    <div class="land-cta-band">
+      <h2>Ready to teach smarter?</h2>
+      <p>Join educators who trust GradeJournal to keep their classrooms organized.</p>
+      <button class="btn-primary btn-xl" onclick="openDemoRequest()" style="background:white;color:var(--accent-dark);box-shadow:none">Request Demo →</button>
+    </div>
+    <footer class="land-footer">© 2026 GradeJournal — Made for professional educators</footer>
+  </div>
+
+  <!-- AUTH -->
+  <div id="s-auth" class="screen">
+    <div class="auth-container">
+      <div class="auth-logo-centered">
+        <div class="auth-logo-mark">
+          <ion-icon name="medical-outline"></ion-icon>
+        </div>
+        <h2>GradeJournal</h2>
+        <p id="auth-tagline">Welcome back — log in to continue</p>
+      </div>
+
+      <div class="auth-split">
+        <div class="auth-split-form" style="width:100%;">
+          <div class="auth-tabs-wrap">
+            <div class="auth-tabs">
+              <button class="auth-tab active" id="tab-signin" onclick="authSwitchTab('signin')">Log In</button>
+            </div>
+          </div>
+          <div class="auth-track-wrap">
+            <div class="auth-track" id="auth-track">
+              <div class="auth-panel" style="width:100%;">
+                <div id="err-signin" class="auth-error"></div>
+                <div class="form-group"><label>Email Address</label><input type="email" class="form-input" id="si-email"
+                    placeholder="teacher@school.com"></div>
+                <div class="form-group"><label>Password</label><input type="password" class="form-input"
+                    id="si-password" placeholder="••••••••" onkeydown="if(event.key==='Enter')authSubmit('signin')">
+                </div>
+                <button class="auth-submit" onclick="authSubmit('signin')">Log In to GradeJournal</button>
+                <div class="auth-divider">
+                  <div class="auth-divider-line"></div>
+                  <div class="auth-divider-text">or</div>
+                  <div class="auth-divider-line"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="auth-back"><a onclick="showLanding()">← Back to home</a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOME -->
+  <div id="s-home" class="screen">
+    <div class="topbar">
+      <div class="topbar-logo">
+        <div class="logo-mark">
+          <ion-icon name="medical-outline"></ion-icon>
+        </div>
+        GradeJournal
+      </div>
+      <div class="topbar-right">
+        <div class="save-pill" id="save-pill-home"><svg width="10" height="10" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="3">
+            <polyline points="20 6 9 17 4 12" />
+          </svg>Saved</div>
+        <div class="user-pill" onclick="openOv('ov-user')">
+          <div class="user-avatar" id="user-av">?</div>
+          <div class="user-name" id="user-name-display">Guest</div>
+        </div>
+      </div>
+    </div>
+    <div class="screen-body">
+      <div class="home-header">
+        <div>
+          <div class="home-greeting" id="home-greeting">Good morning</div>
+          <div class="home-sub">Manage your classrooms and track student progress</div>
+        </div>
+        <button class="btn btn-primary" onclick="openOv('ov-new-class')"><svg width="13" height="13" fill="none"
+            stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <line x1="12" y1="5" x2="12" y2="19" />
+            <line x1="5" y1="12" x2="19" y2="12" />
+          </svg>New Classroom</button>
+      </div>
+      <div class="classrooms-grid" id="classrooms-grid"></div>
+    </div>
+  </div>
+
+  <!-- CLASSROOM -->
+  <div id="s-classroom" class="screen slide-right" style="z-index:3">
+    <div class="topbar">
+      <button class="back-btn" onclick="goHome()"><svg width="14" height="14" fill="none" stroke="currentColor"
+          stroke-width="2.5" viewBox="0 0 24 24">
+          <path d="M19 12H5M12 5l-7 7 7 7" />
+        </svg>Classrooms</button>
+      <span class="topbar-sep">/</span><span class="topbar-crumb active" id="class-crumb">Class</span>
+      <div class="topbar-right">
+        <div class="save-pill" id="save-pill-class"><svg width="10" height="10" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="3">
+            <polyline points="20 6 9 17 4 12" />
+          </svg>Saved</div>
+        <button class="btn btn-secondary btn-sm" onclick="exportClass()"><svg width="12" height="12" fill="none"
+            stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" y1="15" x2="12" y2="3" />
+          </svg>Export</button>
+      </div>
+    </div>
+    <div class="tabs-bar">
+      <button class="tab-btn active" data-tab="students" onclick="switchTab('students',this)">Students <span
+          class="tab-badge" id="tbadge-students">0</span></button>
+      <button class="tab-btn" data-tab="lessons" onclick="switchTab('lessons',this)">Lessons <span class="tab-badge"
+          id="tbadge-lessons">0</span></button>
+      <button class="tab-btn" data-tab="analytics" onclick="switchTab('analytics',this)">Analytics</button>
+    </div>
+    <div style="flex:1;overflow:hidden;display:flex;flex-direction:column">
+      <div id="tp-students" class="tab-panel active">
+        <div class="panel-hdr">
+          <div class="panel-hdr-title">Class Roster</div>
+          <div class="panel-hdr-count" id="students-count">0</div>
+          <div class="panel-hdr-right"><button class="btn btn-primary btn-sm" onclick="openAddStudent()">+ Add
+              Student</button></div>
+        </div>
+        <div class="panel-scroll" id="students-list"></div>
+      </div>
+      <div id="tp-lessons" class="tab-panel">
+        <div class="panel-hdr">
+          <div class="panel-hdr-title">All Lessons</div>
+          <div class="panel-hdr-count" id="lessons-count">0</div>
+          <div class="panel-hdr-right"><button class="btn btn-primary btn-sm" onclick="openAddLesson()">+ New
+              Lesson</button></div>
+        </div>
+        <div class="panel-scroll">
+          <div class="lessons-list" id="lessons-list"></div>
+        </div>
+      </div>
+      <div id="tp-analytics" class="tab-panel">
+        <div class="panel-hdr">
+          <div class="panel-hdr-title">Attendance Analytics</div>
+          <div class="panel-hdr-right"><button class="btn btn-secondary btn-sm" onclick="renderAnalytics()">↺
+              Refresh</button></div>
+        </div>
+        <div class="panel-scroll" id="analytics-scroll"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GRADEBOOK -->
+  <div id="s-lesson" class="screen slide-right" style="z-index:4">
+    <div class="topbar">
+      <button class="back-btn" onclick="goBackToClass()"><svg width="14" height="14" fill="none" stroke="currentColor"
+          stroke-width="2.5" viewBox="0 0 24 24">
+          <path d="M19 12H5M12 5l-7 7 7 7" />
+        </svg><span id="lesson-back-label">Class</span></button>
+      <span class="topbar-sep">/</span><span class="topbar-crumb active" id="lesson-crumb">Lesson</span>
+      <div class="topbar-right">
+        <div class="save-pill" id="save-pill-lesson"><svg width="10" height="10" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="3">
+            <polyline points="20 6 9 17 4 12" />
+          </svg>Saved</div>
+        <button class="btn btn-secondary btn-sm" onclick="openAddColumn()" id="add-col-btn">+ Column</button>
+        <button class="btn btn-primary btn-sm" onclick="exportLesson()"><svg width="12" height="12" fill="none"
+            stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" y1="15" x2="12" y2="3" />
+          </svg>Export</button>
+      </div>
+    </div>
+    <div class="lesson-gb-header">
+      <div class="lesson-gb-name" id="lgb-name"></div>
+      <div class="lesson-gb-date" id="lgb-date"></div>
+    </div>
+    <div class="stats-strip" id="stats-strip"></div>
+    <div class="gradebook-scroll">
+      <table class="gb-table">
+        <thead id="gb-head"></thead>
+        <tbody id="gb-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- MODALS -->
+  <div class="ov" id="ov-new-class">
+    <div class="modal">
+      <div class="modal-hdr">
+        <div class="modal-icon">🏫</div>
+        <div>
+          <div class="modal-title">New Classroom</div>
+          <div class="modal-sub">Set up your class details</div>
+        </div>
+      </div>
+      <div class="fg"><label class="flabel">Classroom Name</label><input class="finput" id="inp-cname"
+          placeholder="e.g. 10A Mathematics" onkeydown="ifEnter(event,createClassroom)"></div>
+      <div class="frow">
+        <div class="fg"><label class="flabel">Subject</label><input class="finput" id="inp-csub"
+            placeholder="e.g. Math"></div>
+        <div class="fg"><label class="flabel">Teacher Name</label><input class="finput" id="inp-cteacher"
+            placeholder="Your name"></div>
+      </div>
+      <div class="modal-foot"><button class="btn btn-ghost-app" onclick="closeOv('ov-new-class')">Cancel</button><button
+          class="btn btn-primary" onclick="createClassroom()">Create Classroom</button></div>
+    </div>
+  </div>
+
+  <div class="ov" id="ov-student">
+    <div class="modal modal-lg">
+      <div class="modal-hdr">
+        <div class="modal-icon">👤</div>
+        <div>
+          <div class="modal-title" id="ov-stu-title">Add Student</div>
+          <div class="modal-sub">Contact info stored separately from grades</div>
+        </div>
+      </div>
+      <div class="fg"><label class="flabel">Full Name *</label><input class="finput" id="inp-sname"
+          placeholder="e.g. Bekzod Aliyev"></div>
+      <div class="frow">
+        <div class="fg"><label class="flabel">Student Phone</label><input class="finput" id="inp-sphone"
+            placeholder="+998 90 000 00 00"></div>
+        <div class="fg"><label class="flabel">Student Email</label><input class="finput" id="inp-semail"
+            placeholder="student@email.com"></div>
+      </div>
+      <div class="frow">
+        <div class="fg"><label class="flabel">Parent / Guardian</label><input class="finput" id="inp-pname"
+            placeholder="Parent full name"></div>
+        <div class="fg"><label class="flabel">Parent Phone</label><input class="finput" id="inp-pphone"
+            placeholder="+998 90 000 00 00"></div>
+      </div>
+      <div class="fg"><label class="flabel">Notes</label><input class="finput" id="inp-snote"
+          placeholder="Optional notes..."></div>
+      <div class="modal-foot"><button class="btn btn-ghost-app" onclick="closeOv('ov-student')">Cancel</button><button
+          class="btn btn-primary" id="stu-save-btn" onclick="saveStudent()">Add Student</button></div>
+    </div>
+  </div>
+
+  <div class="ov" id="ov-lesson">
+    <div class="modal">
+      <div class="modal-hdr">
+        <div class="modal-icon">📅</div>
+        <div>
+          <div class="modal-title">New Lesson</div>
+          <div class="modal-sub">Choose lesson type and details</div>
+        </div>
+      </div>
+
+      <div class="mode-toggle">
+        <button type="button" class="mode-btn active" id="mode-standard" onclick="toggleLessonMode('standard')">
+          <div class="mode-icon">📚</div>
+          <div class="mode-label">Standard</div>
+          <div class="mode-desc">Regular lesson with custom columns</div>
+        </button>
+        <button type="button" class="mode-btn" id="mode-ielts" onclick="toggleLessonMode('ielts')">
+          <div class="mode-icon">🎯</div>
+          <div class="mode-label">IELTS Mode</div>
+          <div class="mode-desc">4 sections + Overall Band</div>
+        </button>
+      </div>
+
+      <div class="fg"><label class="flabel">Lesson Title / Topic</label><input class="finput" id="inp-ltopic"
+          placeholder="e.g. Mock Test #1"></div>
+      <div class="frow">
+        <div class="fg"><label class="flabel">Date</label><input class="finput" id="inp-ldate" type="date"></div>
+        <div class="fg"><label class="flabel">Lesson №</label><input class="finput" id="inp-lnum" type="number" min="1"
+            placeholder="auto"></div>
+      </div>
+
+      <div class="modal-foot"><button class="btn btn-ghost-app" onclick="closeOv('ov-lesson')">Cancel</button><button
+          class="btn btn-primary" onclick="saveLesson()">Create Lesson</button></div>
+    </div>
+  </div>
+
+  <div class="ov" id="ov-column">
+    <div class="modal">
+      <div class="modal-hdr">
+        <div class="modal-icon">📊</div>
+        <div>
+          <div class="modal-title">Add Grade Column</div>
+        </div>
+      </div>
+      <div class="fg"><label class="flabel">Column Name</label><input class="finput" id="inp-colname"
+          placeholder="e.g. Quiz 1, Midterm, Oral..." onkeydown="ifEnter(event,saveColumn)"></div>
+      <div class="modal-foot"><button class="btn btn-ghost-app" onclick="closeOv('ov-column')">Cancel</button><button
+          class="btn btn-primary" onclick="saveColumn()">Add Column</button></div>
+    </div>
+  </div>
+
+  <div class="ov" id="ov-rename-col">
+    <div class="modal">
+      <div class="modal-hdr">
+        <div class="modal-icon">✏️</div>
+        <div>
+          <div class="modal-title">Rename Column</div>
+        </div>
+      </div>
+      <div class="fg"><label class="flabel">New Name</label><input class="finput" id="inp-rename-col"
+          onkeydown="ifEnter(event,confirmRenameCol)"></div>
+      <div class="modal-foot"><button class="btn btn-ghost-app"
+          onclick="closeOv('ov-rename-col')">Cancel</button><button class="btn btn-primary"
+          onclick="confirmRenameCol()">Rename</button></div>
+    </div>
+  </div>
+
+  <div class="ov" id="ov-edit-lesson">
+    <div class="modal">
+      <div class="modal-hdr">
+        <div class="modal-icon">✏️</div>
+        <div>
+          <div class="modal-title">Edit Lesson</div>
+        </div>
+      </div>
+      <div class="fg"><label class="flabel">Lesson Title</label><input class="finput" id="inp-el-topic"></div>
+      <div class="frow">
+        <div class="fg"><label class="flabel">Date</label><input class="finput" id="inp-el-date" type="date"></div>
+        <div class="fg"><label class="flabel">Lesson №</label><input class="finput" id="inp-el-num" type="number"
+            min="1"></div>
+      </div>
+      <div class="modal-foot"><button class="btn btn-ghost-app"
+          onclick="closeOv('ov-edit-lesson')">Cancel</button><button class="btn btn-primary"
+          onclick="confirmEditLesson()">Save</button></div>
+    </div>
+  </div>
+
+  <div class="ov" id="ov-confirm">
+    <div class="modal confirm-modal">
+      <div class="modal-hdr">
+        <div class="modal-icon" style="background:var(--error-bg)">⚠️</div>
+        <div>
+          <div class="modal-title" id="confirm-title">Confirm</div>
+        </div>
+      </div>
+      <div class="confirm-desc" id="confirm-desc"></div>
+      <div class="modal-foot"><button class="btn btn-ghost-app" onclick="closeOv('ov-confirm')">Cancel</button><button
+          class="btn btn-danger" onclick="confirmOk()">Delete</button></div>
+    </div>
+  </div>
+
+  <div class="ov" id="ov-user">
+    <div class="modal" style="max-width:300px">
+      <div class="modal-hdr">
+        <div class="modal-icon">👤</div>
+        <div>
+          <div class="modal-title" id="um-name">Teacher</div>
+          <div class="modal-sub" id="um-email">Local mode</div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <button class="btn btn-ghost-app" style="width:100%;justify-content:center"
+          onclick="closeOv('ov-user')">Close</button>
+        <button class="btn btn-danger" style="width:100%;justify-content:center" onclick="signOut()">Sign Out</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXPORT MODAL -->
+  <div class="ov" id="ov-export">
+    <div class="modal">
+      <div class="modal-hdr">
+        <div class="modal-icon">📥</div>
+        <div>
+          <div class="modal-title">Export Options</div>
+          <div class="modal-sub">Choose your format</div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <button class="export-btn" onclick="exportPDF()">
+          <div class="export-btn-icon">📄</div>
+          <div class="export-btn-text">
+            <div class="export-btn-title">Export as PDF</div>
+            <div class="export-btn-desc">Professional document with custom branding</div>
+          </div>
+        </button>
+        <button class="export-btn" onclick="exportExcel()">
+          <div class="export-btn-icon">📊</div>
+          <div class="export-btn-text">
+            <div class="export-btn-title">Export as Excel</div>
+            <div class="export-btn-desc">Spreadsheet for further analysis</div>
+          </div>
+        </button>
+      </div>
+      <button class="export-settings-link" onclick="openExportSettings()">
+        <span>⚙️</span>
+        <span>Customize PDF Appearance</span>
+      </button>
+      <div class="modal-foot">
+        <button class="btn btn-ghost-app" onclick="closeOv('ov-export')">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXPORT SETTINGS MODAL -->
+  <div class="ov" id="ov-export-settings">
+    <div class="modal">
+      <div class="modal-hdr">
+        <div class="modal-icon">⚙️</div>
+        <div>
+          <div class="modal-title">Export Settings</div>
+          <div class="modal-sub">Customize your PDF exports</div>
+        </div>
+      </div>
+
+      <div class="fg">
+        <label class="flabel">Company Logo</label>
+        <div class="file-upload-zone" id="file-upload-zone">
+          <input type="file" id="export-logo-file" class="file-upload-input" accept="image/png,image/jpeg,image/jpg"
+            onchange="onExportLogoFileChange(event)">
+          <label for="export-logo-file" class="file-upload-label">
+            <span class="file-upload-icon">📤</span>
+            <span>Click or drag & drop PNG/JPEG</span>
+          </label>
+          <div class="file-preview-zone" id="file-preview-zone">
+            <img id="export-logo-preview" class="file-preview-img" src="" alt="Logo preview">
+            <div class="file-preview-info">
+              <div class="file-preview-name" id="file-preview-name"></div>
+              <div class="file-preview-size" id="file-preview-size"></div>
+            </div>
+            <button class="file-preview-remove" onclick="removeExportLogo()">Remove</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="fg">
+        <label class="flabel">PDF Accent Color</label>
+        <div class="color-picker-container">
+          <div class="color-preview-bar" onclick="toggleColorPicker()">
+            <div class="color-swatch" id="color-swatch"></div>
+            <div class="color-info">
+              <div class="color-label">Current Color</div>
+              <div class="color-value" id="color-value">hsl(30, 60%, 50%)</div>
+            </div>
+          </div>
+          <div class="color-picker-dropdown" id="color-picker-dropdown">
+            <div class="color-gradient-bar" id="color-gradient-bar">
+              <div class="color-gradient-cursor" id="color-cursor"></div>
+            </div>
+            <div class="color-sliders">
+              <div class="color-slider-row">
+                <span class="color-slider-label">Hue</span>
+                <input type="range" class="color-slider hue-slider" id="hue-slider" min="0" max="360" value="30">
+                <span class="color-slider-value" id="hue-value">30°</span>
+              </div>
+              <div class="color-slider-row">
+                <span class="color-slider-label">Saturation</span>
+                <input type="range" class="color-slider" id="sat-slider" min="0" max="100" value="60">
+                <span class="color-slider-value" id="sat-value">60%</span>
+              </div>
+              <div class="color-slider-row">
+                <span class="color-slider-label">Lightness</span>
+                <input type="range" class="color-slider" id="light-slider" min="0" max="100" value="50">
+                <span class="color-slider-value" id="light-value">50%</span>
+              </div>
+              <div class="color-slider-row">
+                <span class="color-slider-label">Opacity</span>
+                <input type="range" class="color-slider opacity-slider" id="opacity-slider" min="0" max="100"
+                  value="100">
+                <span class="color-slider-value" id="opacity-value">100%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-foot">
+        <button class="btn btn-ghost-app" onclick="closeOv('ov-export-settings')">Cancel</button>
+        <button class="btn btn-primary" onclick="saveExportSettings()">Save Settings</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- DEMO REQUEST MODAL -->
+  <div class="ov" id="ov-demo">
+    <div class="modal">
+      <div class="modal-hdr">
+        <div class="modal-icon">📧</div>
+        <div>
+          <div class="modal-title">Request a Demo</div>
+          <div class="modal-sub">We'll get back to you within 24 hours</div>
+        </div>
+      </div>
+      
+      <div class="demo-contact-info" style="background: var(--cream-2); padding: 20px; border-radius: 12px; margin-bottom: 20px; text-align: center;">
+        <div style="font-size: 16px; font-weight: 600; color: var(--text-dark); margin-bottom: 8px;">📧 Send us an email</div>
+        <div style="font-size: 18px; font-weight: 700; color: var(--accent); margin-bottom: 4px;">eshmurodov.moon1508@gmail.com</div>
+        <div style="font-size: 13px; color: var(--text-light);">Please include your name, school, and a brief message</div>
+      </div>
+      
+      <div style="background: white; border: 1px solid var(--border-light); border-radius: 12px; padding: 16px; margin-bottom: 20px;">
+        <p style="font-size: 13px; color: var(--text-mid); margin-bottom: 12px;"><strong>What to include in your email:</strong></p>
+        <ul style="font-size: 13px; color: var(--text-light); padding-left: 20px;">
+          <li>Your full name and role</li>
+          <li>School/Institution name</li>
+          <li>Number of teachers/students</li>
+          <li>Any specific questions</li>
+        </ul>
+      </div>
+      
+      <div style="text-align: center; margin-bottom: 16px;">
+        <a href="https://mail.google.com/mail/?view=cm&fs=1&to=eshmurodov.moon1508@gmail.com&su=GradeJournal%20Demo%20Request&body=Hello%2C%0A%0AI'd%20like%20to%20request%20a%20demo%20of%20GradeJournal.%0A%0AName%3A%0ASchool%3A%0ARole%3A%0ANumber%20of%20students%3A%0A%0AAdditional%20questions%3A" 
+           target="_blank"
+           class="btn btn-primary" 
+           style="display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; text-decoration: none;">
+          <ion-icon name="logo-google"></ion-icon>
+          Open in Gmail
+        </a>
+      </div>
+      
+      <div style="font-size: 12px; color: var(--text-light); text-align: center; padding: 8px; background: var(--cream-2); border-radius: 8px;">
+        <span>⏱️ We typically respond within 24 hours on business days</span>
+      </div>
+      
+      <div class="modal-foot">
+        <button class="btn btn-ghost-app" onclick="closeOv('ov-demo')">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ONBOARDING MODAL -->
+  <div class="ov" id="ov-onboarding">
+    <div class="modal" style="max-width: 500px;">
+      <div class="modal-hdr">
+        <div class="modal-icon" style="background: var(--accent-light);">
+          <ion-icon name="happy-outline" style="font-size: 24px;"></ion-icon>
+        </div>
+        <div>
+          <div class="modal-title">Welcome to GradeJournal! 👋</div>
+          <div class="modal-sub">Let's personalize your experience</div>
+        </div>
+      </div>
+      
+      <div class="fg">
+        <label class="flabel">Your Full Name</label>
+        <input class="finput" id="onboarding-name" placeholder="e.g. John Smith">
+      </div>
+      
+      <div class="fg">
+        <label class="flabel">School/Institution Name</label>
+        <input class="finput" id="onboarding-school" placeholder="e.g. Lincoln High School">
+      </div>
+      
+      <div class="fg">
+        <label class="flabel">Your Role</label>
+        <select class="fselect" id="onboarding-role">
+          <option value="teacher">Teacher</option>
+          <option value="professor">Professor</option>
+          <option value="tutor">Tutor</option>
+          <option value="admin">Administrator</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+      
+      <div style="background: var(--cream-2); padding: 16px; border-radius: 12px; margin: 16px 0;">
+        <p style="font-size: 13px; color: var(--text-mid); display: flex; align-items: center; gap: 8px;">
+          <ion-icon name="information-circle-outline" style="font-size: 18px; color: var(--accent);"></ion-icon>
+          This information will be used in your exports and profile. You can change it later.
+        </p>
+      </div>
+      
+      <div class="modal-foot">
+        <button class="btn btn-primary" style="width: 100%;" onclick="saveOnboarding()">Get Started →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTACT PAGE -->
+  <div id="s-contact" class="screen">
+    <div class="topbar">
+      <button class="back-btn" onclick="showLanding()">
+        <ion-icon name="arrow-back-outline"></ion-icon> Back
+      </button>
+      <div class="topbar-logo">
+        <div class="logo-mark"><ion-icon name="medical-outline"></ion-icon></div>
+        GradeJournal
+      </div>
+    </div>
+    
+    <div class="screen-body" style="display: flex; align-items: center; justify-content: center;">
+      <div style="max-width: 600px; width: 100%; padding: 20px;">
+        <div style="text-align: center; margin-bottom: 40px;">
+          <div style="font-size: 48px; color: var(--accent); margin-bottom: 16px;">
+            <ion-icon name="mail-outline"></ion-icon>
+          </div>
+          <h1 style="font-family: 'Playfair Display', serif; font-size: 32px; margin-bottom: 8px;">Get in Touch</h1>
+          <p style="color: var(--text-light);">We're here to help with any questions</p>
+        </div>
+        
+        <div style="display: flex; flex-direction: column; gap: 24px;">
+          <!-- Email Card -->
+          <div style="background: white; border-radius: 20px; padding: 32px; border: 1px solid var(--border-light); box-shadow: var(--shadow); text-align: center;">
+            <div style="width: 64px; height: 64px; background: var(--accent-light); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+              <ion-icon name="mail-outline" style="font-size: 32px; color: var(--accent);"></ion-icon>
+            </div>
+            <h2 style="font-size: 20px; margin-bottom: 8px;">Email Us</h2>
+            <p style="color: var(--text-light); margin-bottom: 20px;">We typically respond within 24 hours</p>
+            <a href="https://mail.google.com/mail/?view=cm&fs=1&to=eshmurodov.moon1508@gmail.com&su=GradeJournal%20Inquiry" 
+               target="_blank" 
+               class="btn btn-primary" 
+               style="display: inline-flex; align-items: center; gap: 8px; padding: 14px 28px; font-size: 16px; text-decoration: none;">
+              <ion-icon name="logo-google"></ion-icon>
+              Open in Gmail
+            </a>
+            <p style="margin-top: 16px; font-size: 13px; color: var(--text-light);">
+              eshmurodov.moon1508@gmail.com
+            </p>
+          </div>
+          
+          <!-- Phone Card -->
+          <div style="background: white; border-radius: 20px; padding: 32px; border: 1px solid var(--border-light); box-shadow: var(--shadow); text-align: center;">
+            <div style="width: 64px; height: 64px; background: var(--cream-2); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+              <ion-icon name="call-outline" style="font-size: 32px; color: var(--text-light);"></ion-icon>
+            </div>
+            <h2 style="font-size: 20px; margin-bottom: 8px;">Call Us</h2>
+            <p style="color: var(--text-light); margin-bottom: 20px;">Available Mon-Fri, 9am-6pm</p>
+            <div style="font-size: 18px; font-weight: 600; color: var(--text-dark); padding: 14px 28px; background: var(--cream-2); border-radius: 99px; display: inline-block;">
+              +998 91 404 54 69
+            </div>
+          </div>
+        </div>
+        
+        <div style="text-align: center; margin-top: 40px;">
+          <a href="#" style="color: var(--accent); text-decoration: none; font-weight: 500;" onclick="event.preventDefault(); alert('FAQ coming soon!');">
+            <ion-icon name="help-circle-outline" style="margin-right: 4px;"></ion-icon>
+            Visit our FAQ
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sheet-ov" id="sheet-ov" onclick="closeSheetIfBg(event)">
+    <div class="sheet" id="sheet-content"></div>
+  </div>
+
+  <!-- Libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
